@@ -76,7 +76,7 @@ class Statement:
             if operation.direction == OperationType.RECEIVE:
                 receive_report.add_operation(operation)
             elif operation.direction == OperationType.SEND:
-                receive_report.add_operation(operation)
+                send_report.add_operation(operation)
 
         return receive_report, send_report
 
