@@ -1,5 +1,4 @@
-from datetime import datetime, timedelta
-from time import mktime
+from datetime import timedelta
 
 import urllib.parse
 from enum import Enum
@@ -7,7 +6,7 @@ from enum import Enum
 import settings
 from client.account import Account
 from client.descriptors import Amount, ObjectList
-from request_service import MonobankRequest
+from services.request_service import MonobankRequest
 from services.datetime_service import DateTimeConverter
 
 

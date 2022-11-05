@@ -2,7 +2,7 @@ import settings
 import urllib.parse
 
 from client.person import Client
-from request_service import MonobankRequest
+from services.request_service import MonobankRequest
 from statement.report import Report
 from statement.statement import Statement
 from visualization.chart import Chart
