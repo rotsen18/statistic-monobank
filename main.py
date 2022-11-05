@@ -5,6 +5,7 @@ from client.person import Client
 from request_service import MonobankRequest
 from statement.report import Report
 from statement.statement import Statement
+from visualization.chart import Chart
 
 
 def create_client():
@@ -20,6 +21,8 @@ def main():
     receive_report = Report(operations=statement.get_receive_operations(), name='Receive report')
     send_report = Report(operations=statement.get_send_operations(), name='Send report')
     total_report = receive_report + send_report
+    Chart.show_amount(total_report)
+    Chart.show_balance(send_report)
     return total_report
 
 

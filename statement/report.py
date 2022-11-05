@@ -37,3 +37,15 @@ class Report:
         report.last_operation_date = max(self.last_operation_date, other.last_operation_date)
         report.operations = self.operations + other.operations
         return report
+
+    def get_all_amounts(self):
+        return [operation.amount for operation in self.operations]
+
+    def get_all_timestamps(self):
+        return [operation.time for operation in self.operations]
+
+    def get_all_date(self):
+        return [operation.date for operation in self.operations]
+
+    def get_all_balances(self):
+        return [operation.balance for operation in self.operations]
