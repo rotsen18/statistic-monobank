@@ -23,3 +23,6 @@ class Account:
         self.cashback_type = account_data.get('cashbackType')
         self.masked_pans = account_data.get('maskedPan')
         self.iban = account_data.get('iban')
+
+    def __str__(self):
+        return self.id

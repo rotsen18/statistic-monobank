@@ -14,3 +14,6 @@ class Client:
         self.permissions = client_data.get('permissions')
         self.accounts = client_data.get('accounts')
         self.jars = client_data.get('jars')
+
+    def get_default_account(self):
+        return self.accounts[0] if self.accounts else None
