@@ -39,6 +39,11 @@ class Operation:
         self.invoice_id = operation_data.get('invoiceId')
         self.counter_iban = operation_data.get('counterEdrpou')
         self.direction = OperationType.RECEIVE if self.amount > 0 else OperationType.SEND
+        self.date = self._timestamp_to_date(self.time)
+
+    @staticmethod
+    def _timestamp_to_date(value: int):
+        return datetime.fromtimestamp(value)
 
 
 class Report:
@@ -49,9 +54,12 @@ class Report:
         self.total_operation_amount: float = 0.0
         self.total_cashback_amount: float = 0.0
         self.total_commission_amount: float = 0.0
+        self.operations = []
         if operations is not None:
             for operation in operations:
                 self.add_operation(operation)
+            self.first_operation_date = None or min(operation.date for operation in self.operations)
+            self.last_operation_date = None or max(operation.date for operation in self.operations)
 
     def add_operation(self, operation: Operation):
         self.count_operations += 1
@@ -59,6 +67,7 @@ class Report:
         self.total_operation_amount += operation.operation_mount
         self.total_cashback_amount += operation.cashback_amount
         self.total_commission_amount += operation.commission_rate
+        self.operations.append(operation)
 
     def __add__(self, other):
         # if isinstance(other, Report):
@@ -69,6 +78,9 @@ class Report:
         report.total_operation_amount = round(self.total_operation_amount + other.total_operation_amount, 2)
         report.total_cashback_amount = round(self.total_cashback_amount + other.total_cashback_amount, 2)
         report.total_commission_amount = round(self.total_commission_amount + other.total_commission_amount, 2)
+        report.first_operation_date = min(self.first_operation_date, other.first_operation_date)
+        report.last_operation_date = max(self.last_operation_date, other.last_operation_date)
+        report.operations = self.operations + other.operations
         return report
 
 
@@ -81,6 +93,8 @@ class BaseStatement(ABC):
         self.account = account.id if isinstance(account, Account) else account
         self._interval_converter()
         self.operations = self._get_actions()
+        self.start_date = self._timestamp_to_date(self.start)
+        self.end_date = self._timestamp_to_date(self.end)
 
     @abstractmethod
     def _interval_converter(self):
@@ -94,10 +108,14 @@ class BaseStatement(ABC):
         return MonobankRequest.get_request_data(url)
 
     @staticmethod
-    def _timedelta_to_unix_secs(days: int = 0, hours: int = 0, minutes: int = 0, seconds: int = 0):
+    def _timedelta_to_timestamp(days: int = 0, hours: int = 0, minutes: int = 0, seconds: int = 0):
         now = datetime.now()
         start = now - timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds)
         return int(mktime(start.timetuple()))
+
+    @staticmethod
+    def _timestamp_to_date(value: int):
+        return datetime.fromtimestamp(value)
 
     def get_receive_operations(self):
         return[operation for operation in self.operations if operation.direction == OperationType.RECEIVE]
@@ -110,11 +128,11 @@ class StatementDays(BaseStatement):
     # TODO implement start end validators
     # TODO check max days logic. max 31 days ago or 31 is max interval
     def _interval_converter(self):
-        self.start = self._timedelta_to_unix_secs(days=self.start)
-        self.end = self._timedelta_to_unix_secs(days=self.end)
+        self.start = self._timedelta_to_timestamp(days=self.start)
+        self.end = self._timedelta_to_timestamp(days=self.end)
 
 
 class StatementHours(BaseStatement):
     def _interval_converter(self):
-        self.start = self._timedelta_to_unix_secs(hours=self.start)
-        self.end = self._timedelta_to_unix_secs(hours=self.end)
+        self.start = self._timedelta_to_timestamp(hours=self.start)
+        self.end = self._timedelta_to_timestamp(hours=self.end)

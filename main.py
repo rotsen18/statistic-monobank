@@ -1,7 +1,3 @@
-from datetime import datetime, timedelta
-from time import mktime
-
-import requests
 import settings
 import urllib.parse
 
@@ -20,7 +16,7 @@ def create_client():
 def main():
     client = create_client()
     account = client.accounts[0]
-    statement = StatementDays(account=account, start=31, end=0)
+    statement = StatementDays(account=account, start=60, end=30)
     receive_report = Report(operations=statement.get_receive_operations())
     send_report = Report(operations=statement.get_send_operations())
     total_report = receive_report + send_report
