@@ -127,9 +127,10 @@ def chose_report(reports):
 
 def chose_chart_type():
     variants = {
-        0: {'name': 'all amounts', 'show_chart': Chart.show_amount},
+        0: {'name': 'amounts all', 'show_chart': Chart.show_amount},
         1: {'name': 'amounts per day', 'show_chart': Chart.show_amount_per_day},
-        2: {'name': 'all balance', 'show_chart': Chart.show_balance},
+        2: {'name': 'balance all', 'show_chart': Chart.show_balance},
+        3: {'name': 'balance per day', 'show_chart': Chart.show_balance_per_date},
     }
     while True:
         print()
@@ -142,8 +143,8 @@ def chose_chart_type():
             print('Type correct integer!')
             continue
         number = int(number)
-        if number not in [0, 1, 2]:
-            print('Chose chart from list [0, 1, 2]: ')
+        if number not in [0, 1, 2, 3]:
+            print('Chose chart from list [0, 1, 2, 3]: ')
             continue
         chart = variants.get(number)
         return chart.get('show_chart')

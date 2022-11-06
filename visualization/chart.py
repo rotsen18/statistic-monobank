@@ -25,6 +25,12 @@ class Chart:
         amount_plt = cls._build_plot(raw_x=dates, raw_y=balances)
         amount_plt.show()
 
+    @classmethod
+    def show_balance_per_date(cls, report: Report):
+        dates, balances = report.get_balances_per_date()
+        amount_plt = cls._build_plot(raw_x=dates, raw_y=balances)
+        amount_plt.show()
+
     @staticmethod
     def _build_plot(raw_x: list, raw_y: list):
         np_x = np.array(raw_x)

@@ -73,9 +73,24 @@ class Report:
 
         return list(amount_per_day.keys()), list(amount_per_day.values())
 
-    def get_balance_per_date(self):
+    def get_balances_per_date(self):
         start = self.first_operation_date.date()
         end = self.last_operation_date.date()
         current_date = start
-        balance_per_day = {}
-        # TODO finish logic
+        operations_per_day = {}
+        # while current_date <= end:
+        #     operations_per_day[current_date.strftime(settings.DATE_FORMAT)] = None
+        #     current_date += timedelta(days=1)
+        for current_operation in self.operations:
+            date = current_operation.date.strftime(settings.DATE_FORMAT)
+            saved_operation = operations_per_day.get(date, current_operation)
+            if saved_operation is None:
+                operation = current_operation
+            else:
+                operation = max([saved_operation, current_operation], key=lambda x: x.time)
+            operations_per_day[date] = operation
+        dates = list(operations_per_day.keys())
+        # TODO fill empty days with balance
+        # TODO reverse data
+        balances = [round(operation.balance, 2) for operation in operations_per_day.values()]
+        return dates, balances
