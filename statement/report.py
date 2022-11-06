@@ -72,3 +72,10 @@ class Report:
             amount_per_day[date] += operation.amount
 
         return list(amount_per_day.keys()), list(amount_per_day.values())
+
+    def get_balance_per_date(self):
+        start = self.first_operation_date.date()
+        end = self.last_operation_date.date()
+        current_date = start
+        balance_per_day = {}
+        # TODO finish logic

@@ -8,6 +8,7 @@ from services.datetime_service import DateTimeConverter
 from services.request_service import MonobankRequest
 from statement.report import Report
 from statement.statement import Statement
+from visualization.chart import Chart
 
 
 def create_client():
@@ -26,7 +27,7 @@ def create_client():
 def chose_account(client: Client):
     while True:
         print()
-        print('Avaliable accounts:')
+        print('Available accounts:')
         print('-' * 50)
         for _id, account in enumerate(client.accounts):
             print(f'{str(_id).rjust(2)}|{account.id}|{account.type}|{account.balance} {account.cashback_type}')
@@ -41,7 +42,7 @@ def chose_account(client: Client):
         return client.accounts[int(number)]
 
 
-def get_date(saved_date: str = None):
+def chose_date(saved_date: str = None):
     while True:
         print()
         if saved_date:
@@ -66,7 +67,7 @@ def get_date(saved_date: str = None):
                 return date
 
 
-def get_duration():
+def chose_duration():
     while True:
         print('Write statement length (min:0, max:31 days)')
         print('If ou want change selected date before you can type "date" here')
@@ -90,13 +91,12 @@ def get_statement(account: Account):
     duration = None
     while True:
         if date is None:
-            date = get_date()
+            date = chose_date()
         if duration is None:
-            duration = get_duration()
+            duration = chose_duration()
         if duration == 'date':
-            date = get_date(date)
+            date = chose_date(date)
         return Statement(account=account, start_date=date, duration=duration)
-
 
 
 def print_report_data(receive_report, send_report, total_report):
@@ -107,8 +107,63 @@ def print_report_data(receive_report, send_report, total_report):
         print()
 
 
-def draw_chart():
-    pass
+def chose_report(reports):
+    while True:
+        print()
+        print('Reports:')
+        print('-' * 50)
+        for number, report in reports.items():
+            print(f'{number}|{report.name}')
+        number = input('Chose report to build char: ')
+        if not number.isdigit():
+            print('Type correct integer!')
+            continue
+        number = int(number)
+        if number not in [0, 1, 2]:
+            print('Chose report from list [0, 1, 2]: ')
+            continue
+        return reports.get(number)
+
+
+def chose_chart_type():
+    variants = {
+        0: {'name': 'all amounts', 'show_chart': Chart.show_amount},
+        1: {'name': 'amounts per day', 'show_chart': Chart.show_amount_per_day},
+        2: {'name': 'all balance', 'show_chart': Chart.show_balance},
+    }
+    while True:
+        print()
+        print('Charts:')
+        print('-' * 50)
+        for number, chart in variants.items():
+            print(f'{number}|{chart["name"]}')
+        number = input('Chose chart to build char: ')
+        if not number.isdigit():
+            print('Type correct integer!')
+            continue
+        number = int(number)
+        if number not in [0, 1, 2]:
+            print('Chose chart from list [0, 1, 2]: ')
+            continue
+        chart = variants.get(number)
+        return chart.get('show_chart')
+
+
+def draw_chart(receive_report, send_report, total_report):
+    while True:
+        reports = {
+            0: receive_report,
+            1: send_report,
+            2: total_report,
+        }
+        report = chose_report(reports)
+        show_chart = chose_chart_type()
+        show_chart(report)
+        draw = input('Drive another one? y/n: ')
+        if draw.lower().startswith('y'):
+            continue
+        elif draw.lower().startswith('n'):
+            return
 
 
 def main():
@@ -119,6 +174,8 @@ def main():
     send_report = Report(operations=statement.get_send_operations(), name='Send report')
     total_report = receive_report + send_report
     print_report_data(receive_report, send_report, total_report)
+    draw_chart(receive_report, send_report, total_report)
+    print('EXIT')
 
 
 if __name__ == '__main__':
