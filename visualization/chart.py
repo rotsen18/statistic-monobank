@@ -13,6 +13,12 @@ class Chart:
         amount_plt.show()
 
     @classmethod
+    def show_amount_per_day(cls, report: Report):
+        dates, amounts = report.get_amounts_per_day()
+        amount_plt = cls._build_bar(raw_x=dates, raw_y=amounts)
+        amount_plt.show()
+
+    @classmethod
     def show_balance(cls, report: Report):
         dates = report.get_all_date()
         balances = report.get_all_balances()
@@ -30,6 +36,9 @@ class Chart:
     def _build_bar(raw_x: list, raw_y: list):
         np_x = np.array(raw_x)
         np_y = np.array(raw_y)
+        plt.figure(figsize=(10, 10))
         plt.bar(np_x, np_y)
+        plt.xticks(rotation=90)
+
         return plt
 

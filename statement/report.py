@@ -1,3 +1,6 @@
+import datetime
+
+import settings
 from statement.statement import Operation
 
 
@@ -49,3 +52,18 @@ class Report:
 
     def get_all_balances(self):
         return [operation.balance for operation in self.operations]
+
+    def get_amounts_per_day(self):
+        start = self.first_operation_date.date()
+        end = self.last_operation_date.date()
+        current_date = start
+        amount_per_day = {}
+        while current_date <= end:
+            amount_per_day[current_date.strftime(settings.DATE_FORMAT)] = 0
+            current_date += datetime.timedelta(days=1)
+        for operation in self.operations:
+            date = operation.date.strftime(settings.DATE_FORMAT)
+            amount_per_day[date] += operation.amount
+
+        return list(amount_per_day.keys()), list(amount_per_day.values())
+

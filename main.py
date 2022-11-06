@@ -21,8 +21,9 @@ def main():
     receive_report = Report(operations=statement.get_receive_operations(), name='Receive report')
     send_report = Report(operations=statement.get_send_operations(), name='Send report')
     total_report = receive_report + send_report
-    Chart.show_amount(total_report)
-    Chart.show_balance(send_report)
+    # Chart.show_amount(total_report)
+    # Chart.show_balance(send_report)
+    Chart.show_amount_per_day(total_report)
     return total_report
 
 
