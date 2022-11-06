@@ -30,6 +30,7 @@ class Chart:
         np_x = np.array(raw_x)
         np_y = np.array(raw_y)
         plt.plot(np_x, np_y)
+        plt.xticks(rotation=90)
         return plt
 
     @staticmethod
@@ -39,6 +40,4 @@ class Chart:
         plt.figure(figsize=(10, 10))
         plt.bar(np_x, np_y)
         plt.xticks(rotation=90)
-
         return plt
-
