@@ -10,7 +10,7 @@ class Chart:
         dates = report.get_all_date()
         balances = report.get_all_amounts()
         amount_plt = cls._build_bar(raw_x=dates, raw_y=balances)
-        amount_plt.show()
+        amount_plt.show(block=True)
 
     @classmethod
     def show_amount_per_day(cls, report: Report):
@@ -22,6 +22,12 @@ class Chart:
     def show_balance(cls, report: Report):
         dates = report.get_all_date()
         balances = report.get_all_balances()
+        amount_plt = cls._build_plot(raw_x=dates, raw_y=balances)
+        amount_plt.show()
+
+    @classmethod
+    def show_balance_per_date(cls, report: Report):
+        dates, balances = report.get_balances_per_date()
         amount_plt = cls._build_plot(raw_x=dates, raw_y=balances)
         amount_plt.show()
 

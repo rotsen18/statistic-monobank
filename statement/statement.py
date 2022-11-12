@@ -45,7 +45,7 @@ class Statement:
     operations = ObjectList(Operation)
 
     def __init__(self, account: Account | str = 0, start_date: str = None, duration: int = 31):
-        if start_date is None:
+        if not start_date:
             self.start_date = DateTimeConverter.date_from_now(duration)
         else:
             self.start_date = DateTimeConverter.from_str_to_date(start_date)
